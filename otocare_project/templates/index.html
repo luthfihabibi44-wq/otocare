@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrasi Unit Baru - OtoCare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        /* Styling Navbar */
+        .navbar-custom {
+            background-color: transparent;
+            padding: 1.5rem 0;
+        }
+        .brand-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #000;
+            text-decoration: none;
+        }
+        .brand-logo i {
+            color: #0d6efd;
+            margin-right: 0.5rem;
+        }
+
+        /* Hero Banner - Diperlebar tingginya agar muat gambar komponen */
+        .hero-banner {
+            background-color: #f1f3f5;
+            border-radius: 1.5rem;
+            padding: 4rem;
+            position: relative;
+            margin-bottom: 3rem;
+            overflow: visible; 
+            min-height: 480px;  /* Ditambah tingginya agar menampung seluruh gambar bawah */
+        }
+        .hero-text h1 {
+            font-weight: 700;
+            font-size: 2.75rem;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.25rem;
+        }
+        .hero-text p {
+            color: #6c757d;
+            font-size: 1.1rem;
+            max-width: 450px;
+        }
+
+        /* Wadah Telemetri Motor - Disesuaikan agar pas di sisi kanan banner */
+        .motor-telemetry-container {
+            position: absolute;
+            right: 1.5rem;      
+            top: 50%;          
+            transform: translateY(-50%);
+            width: 48%;        
+            height: 100%;
+            pointer-events: none;
+        }
+
+        /* Gambar Motor yang berisi komponen di bawahnya */
+        .motor-image {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Bulatan Indikator Sensor yang melingkari gambar */
+        .sensor-icon {
+            position: absolute;
+            width: 45px;
+            height: 45px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            z-index: 2;
+            border: 2px solid #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- POSISI INDIKATOR MENYESUAIKAN GAMBAR SENSOR KAMU --- */
+        
+        /* Pelumasan (Oli - Kiri Atas Motor) */
+        .pos-sensor-lubrication {
+            left: 2%;
+            top: 22%;
+        }
+
+        /* Komponen Penggerak (CVT - Kanan Atas Motor) */
+        .pos-sensor-transmission {
+            right: 18%;
+            top: 10%;
+        }
+
+        /* Sistem Rem (Bawah Tengah) */
+        .pos-sensor-braking {
+            left: 45%;
+            bottom: -3%;
+        }
+
+        /* Pengapian (Mesin - Kiri Tengah) */
+        .pos-sensor-ignition {
+            left: -10%;
+            top: 52%;
+        }
+
+        /* Kelistrikan (Aki - Kanan Tengah) */
+        .pos-sensor-electrical {
+            right: -3%;
+            top: 48%;
+        }
+
+        /* Styling Kartu Sektor Perawatan di Bagian Bawah */
+        .section-title {
+            font-weight: 700;
+            font-size: 1.75rem;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+        .sector-card {
+            background-color: #fff;
+            border-radius: 1.25rem;
+            padding: 2.25rem 1.5rem;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.03);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+        }
+        .sector-card:hover { transform: translateY(-3px); }
+        .success-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            color: #198754;
+            font-size: 1.25rem;
+            display: none;
+        }
+        .success-badge.checked { display: block; }
+        
+        .card-icon-container {
+            width: 70px; height: 70px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.5rem auto;
+            position: relative;
+        }
+        .card-icon-container i { font-size: 2rem; }
+        
+        .icon-lubrication-bg { background-color: #e8f1ff; color: #0d6efd; }
+        .icon-ignition-bg { background-color: #e7fcf3; color: #198754; }
+        .icon-transmission-bg { background-color: #fff2e8; color: #fd7e14; }
+        .icon-braking-bg { background-color: #fee8eb; color: #dc3545; }
+        .icon-electrical-bg { background-color: #f1e9ff; color: #6f42c1; }
+        
+        .sector-title { font-weight: 600; font-size: 1.05rem; margin-bottom: 0.75rem; }
+        .sector-desc { color: #6c757d; font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.5rem; flex-grow: 1; }
+
+        @media (max-width: 992px) {
+            .hero-banner { padding: 3rem 2rem; }
+            .motor-telemetry-container { position: relative; width: 100%; right: 0; top: 0; transform: none; margin-top: 3rem; }
+            .hero-text { text-align: center; }
+            .hero-text h1 { font-size: 2.25rem; }
+            .hero-text p { margin: 0 auto 1.25rem auto; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container my-5">
+    
+    <nav class="navbar navbar-custom">
+        <div class="container-fluid d-flex justify-content-between px-0">
+            <a class="brand-logo" href="/"><i class="bi bi-cpu-fill"></i> OtoCare</a>
+            <a href="/armada" class="btn btn-dark btn-sm rounded-pill fw-medium px-4 py-2">
+                Lihat Armada Terpantau <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </nav>
+
+    <div class="hero-banner">
+        <div class="row align-items-center">
+            
+            <div class="col-lg-6 hero-text">
+                <h1 class="fw-bold">Registrasi Unit Baru</h1>
+                <p>Masukkan data telemetri awal kendaraan untuk mengaktifkan sistem monitoring berkala.</p>
+            </div>
+            
+            <div class="col-lg-6 position-relative">
+                <div class="motor-telemetry-container">
+                    <img src="{{ url_for('static', filename='gambar.png') }}" alt="Honda Vario" class="motor-image">
+
+                    <div class="sensor-icon pos-sensor-lubrication" style="color: #0d6efd;"><i class="bi bi-drop-fill"></i></div>
+                    <div class="sensor-icon pos-sensor-transmission" style="color: #fd7e14;"><i class="bi bi-gear-wide-connected"></i></div>
+                    <div class="sensor-icon pos-sensor-braking" style="color: #dc3545;"><i class="bi bi-disc-fill"></i></div>
+                    <div class="sensor-icon pos-sensor-ignition" style="color: #198754;"><i class="bi bi-lightning-charge-fill"></i></div>
+                    <div class="sensor-icon pos-sensor-electrical" style="color: #6f42c1;"><i class="bi bi-battery-charging"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <h2 class="section-title">Sektor Perawatan</h2>
+        <p class="text-muted">Pilih sektor perawatan untuk melihat item pemeriksaan dan rekomendasi servis.</p>
+    </div>
+
+    <form action="/tambah" method="POST">
+        
+        <div class="p-4 mb-4" style="background: white; border-radius: 1.25rem; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label text-muted small fw-bold">NAMA / SERI KENDARAAN</label>
+                    <input type="text" name="nama" class="form-control" placeholder="cth: Honda Vario 150" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label text-muted small fw-bold">NOMOR PLAT</label>
+                    <input type="text" name="plat" class="form-control" placeholder="cth: D 1234 ABC" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label text-muted small fw-bold">TRANSMISI</label>
+                    <select name="jenis" class="form-select" required>
+                        <option value="Matic">Matic (CVT)</option>
+                        <option value="Manual">Manual / Bebek</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label text-muted small fw-bold">ODOMETER SAAT INI (KM)</label>
+                    <input type="number" name="km_sekarang" class="form-control" placeholder="cth: 24500" required>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" id="hidden_tgl_oli" name="tgl_oli">
+        <input type="hidden" id="hidden_km_oli" name="km_oli">
+        <input type="hidden" id="hidden_tgl_mesin" name="tgl_mesin">
+        <input type="hidden" id="hidden_km_mesin" name="km_mesin">
+        <input type="hidden" id="hidden_tgl_cvt" name="tgl_cvt">
+        <input type="hidden" id="hidden_km_cvt" name="km_cvt">
+        <input type="hidden" id="hidden_tgl_kaki" name="tgl_kaki">
+        <input type="hidden" id="hidden_km_kaki" name="km_kaki">
+        <input type="hidden" id="hidden_tgl_listrik" name="tgl_listrik">
+        <input type="hidden" id="hidden_km_listrik" name="km_listrik">
+
+        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-5 g-3 mb-4">
+            
+            <div class="col">
+                <div class="sector-card">
+                    <i class="bi bi-check-circle-fill success-badge" id="badge_lubrication"></i>
+                    <div class="card-icon-container icon-lubrication-bg">
+                        <i class="bi bi-drop-fill"></i>
+                    </div>
+                    <h5 class="sector-title">Pelumasan (Oli Mesin)</h5>
+                    <p class="sector-desc">Perawatan sistem pelumasan untuk menjaga kinerja mesin tetap optimal.</p>
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#modalLubrication">
+                        Lihat Detail <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="sector-card">
+                    <i class="bi bi-check-circle-fill success-badge" id="badge_ignition"></i>
+                    <div class="card-icon-container icon-ignition-bg">
+                        <i class="bi bi-lightning-charge-fill"></i>
+                    </div>
+                    <h5 class="sector-title">Mesin & Pengapian</h5>
+                    <p class="sector-desc">Pemeriksaan performa mesin dan sistem pengapian secara berkala.</p>
+                    <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#modalIgnition">
+                        Lihat Detail <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="sector-card">
+                    <i class="bi bi-check-circle-fill success-badge" id="badge_transmission"></i>
+                    <div class="card-icon-container icon-transmission-bg">
+                        <i class="bi bi-gear-wide-connected"></i>
+                    </div>
+                    <h5 class="sector-title">Komponen Penggerak</h5>
+                    <p class="sector-desc">Perawatan komponen penggerak untuk transmisi berjalan lancar.</p>
+                    <button type="button" class="btn btn-outline-warning btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#modalTransmission">
+                        Lihat Detail <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="sector-card">
+                    <i class="bi bi-check-circle-fill success-badge" id="badge_braking"></i>
+                    <div class="card-icon-container icon-braking-bg">
+                        <i class="bi bi-disc-fill"></i>
+                    </div>
+                    <h5 class="sector-title">Sistem Rem</h5>
+                    <p class="sector-desc">Pemeriksaan sistem rem demi keamanan penuh berkendara.</p>
+                    <button type="button" class="btn btn-outline-danger btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#modalBraking">
+                        Lihat Detail <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="sector-card">
+                    <i class="bi bi-check-circle-fill success-badge" id="badge_electrical"></i>
+                    <div class="card-icon-container icon-electrical-bg">
+                        <i class="bi bi-battery-charging"></i>
+                    </div>
+                    <h5 class="sector-title">Kelistrikan & Aki</h5>
+                    <p class="sector-desc">Pengecekan stabilitas aki dan sistem kelistrikan motor utama.</p>
+                    <button type="button" class="btn btn-outline-info btn-sm rounded-pill px-3 text-info" data-bs-toggle="modal" data-bs-target="#modalElectrical">
+                        Lihat Detail <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="text-center mb-5 p-4" style="background: white; border-radius: 1.25rem; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
+            <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
+                <i class="bi bi-info-circle text-muted"></i>
+                <span class="text-muted small">Buka "Lihat Detail" di setiap sektor di atas untuk memasukkan catatan servis awal.</span>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 py-3 fs-6 fw-semibold">
+                Simpan & Aktifkan Monitoring <i class="bi bi-shield-check ms-1"></i>
+            </button>
+        </div>
+
+    </form>
+</div>
+
+<div class="modal fade" id="modalLubrication" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0" style="border-radius: 1.25rem;">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 pt-0">
+                <h4 class="fw-bold mb-3">Detail Pelumasan</h4>
+                <div class="mb-3">
+                    <label class="form-label text-muted small fw-bold">TANGGAL GANTI OLI</label>
+                    <input type="date" id="modal_tgl_oli" class="form-control">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-muted small fw-bold">KILOMETER GANTI OLI</label>
+                    <input type="number" id="modal_km_oli" class="form-control" placeholder="cth: 22000">
+                </div>
+                <button type="button" class="btn btn-primary w-100 rounded-pill py-2" id="btn_save_oli" data-bs-dismiss="modal">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalIgnition" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0" style="border-radius: 1.25rem;">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 pt-0">
+                <h4 class="fw-bold mb-3">Detail Mesin</h4>
+                <div class="mb-3">
+                    <label class="form-label text-muted small fw-bold">TANGGAL SERVIS MESIN</label>
+                    <input type="date" id="modal_tgl_mesin" class="form-control">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-muted small fw-bold">KILOMETER SERVIS MESIN</label>
+                    <input type="number" id="modal_km_mesin" class="form-control" placeholder="cth: 20000">
+                </div>
+                <button type="button" class="btn btn-success w-100 rounded-pill py-2" id="btn_save_mesin" data-bs-dismiss="modal">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalTransmission" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0" style="border-radius: 1.25rem;">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 pt-0">
+                <h4 class="fw-bold mb-3">Detail Transmisi</h4>
+                <div class="mb-3">
+                    <label class="form-label text-muted small fw-bold">TANGGAL CEK CVT</label>
+                    <input type="date" id="modal_tgl_cvt" class="form-control">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-muted small fw-bold">KILOMETER CEK CVT</label>
+                    <input type="number" id="modal_km_cvt" class="form-control" placeholder="cth: 21500">
+                </div>
+                <button type="button" class="btn btn-warning w-100 rounded-pill py-2 text-white" id="btn_save_cvt" data-bs-dismiss="modal">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalBraking" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0" style="border-radius: 1.25rem;">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 pt-0">
+                <h4 class="fw-bold mb-3">Detail Sistem Rem</h4>
+                <div class="mb-3">
+                    <label class="form-label text-muted small fw-bold">TANGGAL GANTI KAMPAS REM</label>
+                    <input type="date" id="modal_tgl_kaki" class="form-control">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-muted small fw-bold">KILOMETER GANTI KAMPAS REM</label>
+                    <input type="number" id="modal_km_kaki" class="form-control" placeholder="cth: 18000">
+                </div>
+                <button type="button" class="btn btn-danger w-100 rounded-pill py-2" id="btn_save_kaki" data-bs-dismiss="modal">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalElectrical" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0" style="border-radius: 1.25rem;">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 pt-0">
+                <h4 class="fw-bold mb-3">Detail Kelistrikan</h4>
+                <div class="mb-3">
+                    <label class="form-label text-muted small fw-bold">TANGGAL CEK AKI</label>
+                    <input type="date" id="modal_tgl_listrik" class="form-control">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-muted small fw-bold">KILOMETER CEK AKI</label>
+                    <input type="number" id="modal_km_listrik" class="form-control" placeholder="cth: 22000">
+                </div>
+                <button type="button" class="btn btn-info w-100 rounded-pill py-2 text-white" id="btn_save_listrik" data-bs-dismiss="modal">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function setupModalSync(btnSaveId, modalTglId, modalKmId, hiddenTglId, hiddenKmId, badgeId) {
+        document.getElementById(btnSaveId).addEventListener('click', function() {
+            const tglVal = document.getElementById(modalTglId).value;
+            const kmVal = document.getElementById(modalKmId).value;
+
+            if (tglVal && kmVal) {
+                document.getElementById(hiddenTglId).value = tglVal;
+                document.getElementById(hiddenKmId).value = kmVal;
+                document.getElementById(badgeId).classList.add('checked');
+            }
+        });
+    }
+
+    setupModalSync('btn_save_oli', 'modal_tgl_oli', 'modal_km_oli', 'hidden_tgl_oli', 'hidden_km_oli', 'badge_lubrication');
+    setupModalSync('btn_save_mesin', 'modal_tgl_mesin', 'modal_km_mesin', 'hidden_tgl_mesin', 'hidden_km_mesin', 'badge_ignition');
+    setupModalSync('btn_save_cvt', 'modal_tgl_cvt', 'modal_km_cvt', 'hidden_tgl_cvt', 'hidden_km_cvt', 'badge_transmission');
+    setupModalSync('btn_save_kaki', 'modal_tgl_kaki', 'modal_km_kaki', 'hidden_tgl_kaki', 'hidden_km_kaki', 'badge_braking');
+    setupModalSync('btn_save_listrik', 'modal_tgl_listrik', 'modal_km_listrik', 'hidden_tgl_listrik', 'hidden_km_listrik', 'badge_electrical');
+</script>
+
+</body>
+</html>
